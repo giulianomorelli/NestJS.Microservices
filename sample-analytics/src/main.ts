@@ -7,10 +7,20 @@ async function bootstrap() {
   app.connectMicroservice({
     transport: Transport.TCP,
     options: {
+      host: "localhost",
       port: 3001,
     },
   });
+
+  app.use((req: Request, res: Response, next) => {
+    console.log("app.use in Analytics:", req.url);
+    next();
+  });
+
   await app.startAllMicroservices();
-  await app.listen(3001);
+
+  await app.listen(3002, "localhost", async()=>{
+    console.log("analytics in", await app.getUrl());
+  });
 }
 bootstrap();
